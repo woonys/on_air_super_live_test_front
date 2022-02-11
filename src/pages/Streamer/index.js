@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   View,
@@ -20,6 +20,7 @@ import FloatingHearts from '../../components/FloatingHearts';
 import { RTMP_SERVER } from '../../config';
 import Logger from '../../utils/logger';
 
+//class형 컴포넌트이기에 useState hook을 사용할 수 없음. 
 export default class Streamer extends React.Component {
   constructor(props) {
     super(props);
@@ -31,12 +32,15 @@ export default class Streamer extends React.Component {
       messages: [],
       countHeart: 0,
       isVisibleMessages: true,
+      footerVisible: true,
     };
     this.roomName = roomName;
     this.userName = userName;
+    
   }
 
-  componentDidMount() {
+  
+  componentDidMount() { // 컴포넌트가 만들어지고 render가 호출된 이후에 호출되는 메소드. Ajax나 타이머를 생성하는 코드를 작성하는 부분
     this.requestCameraPermission();
     SocketManager.instance.emitPrepareLiveStream({
       userName: this.userName,
@@ -71,6 +75,10 @@ export default class Streamer extends React.Component {
     });
   }
 
+  onPressHideandShow = () => {
+    
+  }
+
   onPressHeart = () => {
     SocketManager.instance.emitSendHeart({
       roomName: this.roomName,
@@ -94,7 +102,7 @@ export default class Streamer extends React.Component {
 
   onPressClose = () => {
     const { navigation } = this.props;
-    navigation.goBack();
+    navigation.goBack(); // 메인으로 돌아가는 기능. navigation: 페이지 간 이동(navi) 기능
   };
 
   onPressLiveStreamButton = () => {
@@ -183,6 +191,12 @@ export default class Streamer extends React.Component {
     const { currentLiveStatus, countHeart } = this.state;
     const userName = get(route, 'params.userName', '');
     const outputUrl = `${RTMP_SERVER}/live/${userName}`;
+     // 클릭 시 hide/show 구현
+    //const [visible, setVisible] = useState(true);
+    // const onPressScreen = () => {
+    //   setVisible(!visible);
+    // }
+
     return (
       <SafeAreaView style={styles.container}>
         <NodeCameraView
@@ -209,7 +223,8 @@ export default class Streamer extends React.Component {
               onPress={this.onPressLiveStreamButton}
             />
           </View>
-          <View style={styles.center} />
+          <View style={styles.center}>
+          </View>
           <View style={styles.footer}>
             {this.renderChatGroup()}
             {this.renderListMessages()}
