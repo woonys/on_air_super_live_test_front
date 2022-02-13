@@ -8,8 +8,10 @@ const styles = StyleSheet.create({
   },
   contentWrapper: { flex: 1 },
   header: { flex: 0.1, justifyContent: 'space-around', flexDirection: 'row' },
-  footer: { flex: 0.1 },
-  center: { flex: 0.8 },
+  // footer: { flex: 0.1 },
+  body: { flex: 0.9 },
+  footerBar: { flex: 1, justifyContent: 'space-around', flexDirection: 'row-reverse' },
+  // footerBar: { height: 600 },
   streamerView: {
     position: 'absolute',
     top: 0,
@@ -37,6 +39,13 @@ const styles = StyleSheet.create({
     color: 'white',
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  transParent: {
+    backgroundColor: 'transparent',
+    display: 'flex',
+    flex: 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

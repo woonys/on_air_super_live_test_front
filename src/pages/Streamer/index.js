@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Alert,
   PermissionsAndroid,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { NodeCameraView } from 'react-native-nodemediaclient';
 import get from 'lodash/get';
@@ -31,6 +32,7 @@ export default class Streamer extends React.Component {
       messages: [],
       countHeart: 0,
       isVisibleMessages: true,
+      isVisibleFooter: true,
     };
     this.roomName = roomName;
     this.userName = userName;
@@ -84,6 +86,12 @@ export default class Streamer extends React.Component {
       message,
     });
     this.setState({ isVisibleMessages: true });
+  };
+
+  onPressVisible = () => {
+    const { isVisibleFooter } = this.state;
+    this.setState(() => ({ isVisibleFooter: !isVisibleFooter }));
+    console.log(isVisibleFooter);
   };
 
   onEndEditing = () => this.setState({ isVisibleMessages: true });
@@ -158,14 +166,18 @@ export default class Streamer extends React.Component {
   };
 
   renderChatGroup = () => {
-    return (
-      <ChatInputGroup
-        onPressHeart={this.onPressHeart}
-        onPressSend={this.onPressSend}
-        onFocus={this.onFocusChatGroup}
-        onEndEditing={this.onEndEditing}
-      />
-    );
+    const { isVisibleFooter } = this.state;
+    if (isVisibleFooter) {
+      return (
+        <ChatInputGroup
+          onPressHeart={this.onPressHeart}
+          onPressSend={this.onPressSend}
+          onFocus={this.onFocusChatGroup}
+          onEndEditing={this.onEndEditing}
+        />
+      );
+    }
+    return null;
   };
 
   renderListMessages = () => {
@@ -209,11 +221,14 @@ export default class Streamer extends React.Component {
               onPress={this.onPressLiveStreamButton}
             />
           </View>
-          <View style={styles.center} />
-          <View style={styles.footer}>
-            {this.renderChatGroup()}
-            {this.renderListMessages()}
-          </View>
+          <TouchableWithoutFeedback onPress={this.onPressVisible}>
+            <View style={styles.body}>
+              <View style={styles.footerBar}>
+                {this.renderChatGroup()}
+                {this.renderListMessages()}
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
         </SafeAreaView>
         <FloatingHearts count={countHeart} />
       </SafeAreaView>
