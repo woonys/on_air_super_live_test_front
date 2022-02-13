@@ -15,6 +15,7 @@ import { LIVE_STATUS, videoConfig, audioConfig } from '../../utils/constants';
 import SocketManager from '../../socketManager';
 import styles from './styles';
 import LiveStreamActionButton from './LiveStreamActionButton';
+import LinkButton from './LinkButton';
 import ChatInputGroup from '../../components/ChatInputGroup';
 import MessagesList from '../../components/MessagesList/MessagesList';
 import FloatingHearts from '../../components/FloatingHearts';
@@ -91,7 +92,6 @@ export default class Streamer extends React.Component {
   onPressVisible = () => {
     const { isVisibleFooter } = this.state;
     this.setState(() => ({ isVisibleFooter: !isVisibleFooter }));
-    console.log(isVisibleFooter);
   };
 
   onEndEditing = () => this.setState({ isVisibleMessages: true });
@@ -186,6 +186,14 @@ export default class Streamer extends React.Component {
     return <MessagesList messages={messages} />;
   };
 
+  renderLink = () => {
+    const { isVisibleFooter } = this.state;
+    if (isVisibleFooter) {
+      return <LinkButton />;
+    }
+    return null;
+  };
+
   setCameraRef = (ref) => {
     this.nodeCameraViewRef = ref;
   };
@@ -224,6 +232,7 @@ export default class Streamer extends React.Component {
           <TouchableWithoutFeedback onPress={this.onPressVisible}>
             <View style={styles.body}>
               <View style={styles.footerBar}>
+                {this.renderLink()}
                 {this.renderChatGroup()}
                 {this.renderListMessages()}
               </View>

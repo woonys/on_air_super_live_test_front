@@ -33,6 +33,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     paddingVertical: 5,
   },
+  btnLink: {
+    position: 'absolute',
+    top: 458,
+    left: 197,
+    borderRadius: 8,
+    width: 200,
+    height: 70,
+    backgroundColor: 'white',
+  },
   beginLiveStreamText: {
     fontSize: 20,
     fontWeight: '600',

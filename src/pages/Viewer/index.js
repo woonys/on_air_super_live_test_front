@@ -25,6 +25,7 @@ export default class Viewer extends Component {
       messages: [],
       countHeart: 0,
       isVisibleMessages: true,
+      isVisibleFooter: true,
       inputUrl: null,
     };
     this.roomName = roomName;
@@ -132,6 +133,11 @@ export default class Viewer extends Component {
     this.setState({ isVisibleMessages: true });
   };
 
+  onPressVisible = () => {
+    const { isVisibleFooter } = this.state;
+    this.setState(() => ({ isVisibleFooter: !isVisibleFooter }));
+  };
+
   onEndEditing = () => this.setState({ isVisibleMessages: true });
 
   onFocusChatGroup = () => {
@@ -179,14 +185,18 @@ export default class Viewer extends Component {
   };
 
   renderChatGroup = () => {
-    return (
-      <ChatInputGroup
-        onPressHeart={this.onPressHeart}
-        onPressSend={this.onPressSend}
-        onFocus={this.onFocusChatGroup}
-        onEndEditing={this.onEndEditing}
-      />
-    );
+    const { isVisibleFooter } = this.state;
+    if (isVisibleFooter) {
+      return (
+        <ChatInputGroup
+          onPressHeart={this.onPressHeart}
+          onPressSend={this.onPressSend}
+          onFocus={this.onFocusChatGroup}
+          onEndEditing={this.onEndEditing}
+        />
+      );
+    }
+    return null;
   };
 
   renderListMessages = () => {
