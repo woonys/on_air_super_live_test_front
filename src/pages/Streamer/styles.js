@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   header: { flex: 0.1, justifyContent: 'space-around', flexDirection: 'row' },
   // footer: { flex: 0.1 },
   body: { flex: 0.9 },
-  footerBar: { flex: 1, justifyContent: 'space-around', flexDirection: 'row-reverse' },
+  footerBar: { flex: 1, flexDirection: 'row-reverse' },
   // footerBar: { height: 600 },
   streamerView: {
     position: 'absolute',
