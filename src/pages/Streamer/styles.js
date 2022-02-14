@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   linkContainerStyle: {
-    backgroundColor: 'rgba(239, 239, 244, 0.5)',
+    backgroundColor: 'rgba(239, 239, 244, 0.7)',
     position: 'absolute',
     top: 458,
     left: 197,
