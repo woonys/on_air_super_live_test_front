@@ -8,6 +8,7 @@ import {
   Alert,
   PermissionsAndroid,
   TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import { NodeCameraView } from 'react-native-nodemediaclient';
 import get from 'lodash/get';
@@ -16,7 +17,7 @@ import { LIVE_STATUS, videoConfig, audioConfig } from '../../utils/constants';
 import SocketManager from '../../socketManager';
 import styles from './styles';
 import LiveStreamActionButton from './LiveStreamActionButton';
-// import LinkButton from './LinkButton';
+import LinkButton from './LinkButton';
 import ChatInputGroup from '../../components/ChatInputGroup';
 import MessagesList from '../../components/MessagesList/MessagesList';
 import FloatingHearts from '../../components/FloatingHearts';
@@ -141,6 +142,11 @@ export default class Streamer extends React.Component {
     }
   };
 
+  _onLinkPressed = () => {
+    const { text } = this.props;
+    Linking.openURL(text.match(REGEX)[0]);
+  };
+
   requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.requestMultiple(
@@ -190,10 +196,7 @@ export default class Streamer extends React.Component {
 
   onPressLinkButton = () => {
     const { isVisibleFooter } = this.state;
-    if (isVisibleFooter) {
-      return <RNUrlPreview text="https://bit.ly/3rKSI7h" />;
-    }
-    return null;
+    if (isVisibleFooter) return <RNUrlPreview text="https://bit.ly/3rKSI7h" />;
   };
 
   setCameraRef = (ref) => {
@@ -205,6 +208,7 @@ export default class Streamer extends React.Component {
     const { currentLiveStatus, countHeart } = this.state;
     const userName = get(route, 'params.userName', '');
     const outputUrl = `${RTMP_SERVER}/live/${userName}`;
+    const { isVisibleFooter } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <NodeCameraView
@@ -234,6 +238,7 @@ export default class Streamer extends React.Component {
           <TouchableWithoutFeedback onPress={this.onPressVisible}>
             <View style={styles.body}>
               <View style={styles.footerBar}>
+                {/* {isVisibleFooter && <LinkButton />} */}
                 {this.onPressLinkButton()}
                 {this.renderChatGroup()}
                 {this.renderListMessages()}

@@ -2,6 +2,7 @@ import React from 'react';
 import { getLinkPreview } from 'link-preview-js';
 import PropTypes from 'prop-types';
 import { Image, Linking, Text, TouchableOpacity, View, ViewPropTypes } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import styles from './styles';
 
 const REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/g;
@@ -65,14 +66,6 @@ export default class RNUrlPreview extends React.PureComponent {
     Linking.openURL(text.match(REGEX)[0]);
   };
 
-  //   renderImage = (imageLink, faviconLink, imageStyle, faviconStyle, imageProps) => {
-  //     return imageLink ? (
-  //       <Image style={imageStyle} source={{ uri: imageLink }} {...imageProps} />
-  //     ) : faviconLink ? (
-  //       <Image style={faviconStyle} source={{ uri: faviconLink }} {...imageProps} />
-  //     ) : null;
-  //   };
-
   renderImage = (imageLink, faviconLink) => {
     if (imageLink) {
       return <Image style={styles.imageStyle} source={{ uri: imageLink }} {...styles.imageProps} />;
@@ -80,6 +73,28 @@ export default class RNUrlPreview extends React.PureComponent {
     if (faviconLink) {
       return (
         <Image style={styles.faviconStyle} source={{ uri: faviconLink }} {...styles.imageProps} />
+      );
+    }
+    return null;
+  };
+
+  renderFastImage = (imageLink, faviconLink) => {
+    if (imageLink) {
+      return (
+        <FastImage
+          style={styles.imageStyle}
+          source={{ uri: imageLink, priority: FastImage.priority.normal }}
+          resizeMode={FastImage.resizeMode.contain}
+        />
+      );
+    }
+    if (faviconLink) {
+      return (
+        <FastImage
+          style={styles.faviconStyle}
+          source={{ uri: faviconLink, priority: FastImage.priority.normal }}
+          resizeMode={FastImage.resizeMode.contain}
+        />
       );
     }
     return null;
@@ -137,6 +152,7 @@ export default class RNUrlPreview extends React.PureComponent {
           onPress={() => this._onLinkPressed()}
         >
           {this.renderImage(imageLink, faviconLink, imageStyle, faviconStyle, imageProps)}
+          {this.renderFastImage(imageLink, faviconLink, imageStyle, faviconStyle)}
           {this.renderText(
             showTitle,
             showDescription,
