@@ -1,0 +1,220 @@
+import React from 'react';
+import { getLinkPreview } from 'link-preview-js';
+import PropTypes from 'prop-types';
+import { Image, Linking, Text, TouchableOpacity, View, ViewPropTypes } from 'react-native';
+import styles from './styles';
+
+const REGEX = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/g;
+
+export default class RNUrlPreview extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isUri: false,
+      linkTitle: undefined,
+      linkDesc: undefined,
+      linkFavicon: undefined,
+      linkImg: undefined,
+    };
+    this.getPreview(props.text, props.requestOptions);
+  }
+
+  componentDidUpdate(nextProps) {
+    const { text } = this.props;
+    if (nextProps.text !== text) {
+      this.getPreview(nextProps.text);
+    } else if (nextProps.text == null) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ isUri: false });
+    }
+  }
+
+  getPreview = (text, options) => {
+    const { onError, onLoad } = this.props;
+    getLinkPreview(text, options)
+      .then((data) => {
+        onLoad(data);
+        this.setState({
+          isUri: true,
+          linkTitle: data.title ? data.title : undefined,
+          linkDesc: data.description ? data.description : undefined,
+          linkImg:
+            data.images && data.images.length > 0
+              ? data.images.find((element) => {
+                  return (
+                    element.includes('.png') ||
+                    element.includes('.jpg') ||
+                    element.includes('.jpeg')
+                  );
+                })
+              : undefined,
+          linkFavicon:
+            data.favicons && data.favicons.length > 0
+              ? data.favicons[data.favicons.length - 1]
+              : undefined,
+        });
+      })
+      .catch((error) => {
+        onError(error);
+        this.setState({ isUri: false });
+      });
+  };
+
+  _onLinkPressed = () => {
+    const { text } = this.props;
+    Linking.openURL(text.match(REGEX)[0]);
+  };
+
+  renderImage = (imageLink, faviconLink) => {
+    if (imageLink) {
+      return <Image style={styles.imageStyle} source={{ uri: imageLink }} {...styles.imageProps} />;
+    }
+    if (faviconLink) {
+      return (
+        <Image style={styles.faviconStyle} source={{ uri: faviconLink }} {...styles.imageProps} />
+      );
+    }
+    return null;
+  };
+
+  renderText = (
+    showTitle,
+    showDescription,
+    title,
+    description,
+    titleNumberOfLines,
+    descriptionNumberOfLines
+  ) => {
+    return (
+      <View style={styles.textContainerStyle}>
+        {showTitle && (
+          <Text numberOfLines={titleNumberOfLines} style={styles.titleStyle}>
+            {title}
+          </Text>
+        )}
+        {showDescription && (
+          <Text numberOfLines={descriptionNumberOfLines} style={styles.descriptionStyle}>
+            {description}
+          </Text>
+        )}
+      </View>
+    );
+  };
+
+  renderLinkPreview = (
+    imageLink,
+    faviconLink,
+    showTitle,
+    showDescription,
+    title,
+    description,
+    titleNumberOfLines,
+    descriptionNumberOfLines
+  ) => {
+    return (
+      <TouchableOpacity
+        style={styles.linkContainerStyle}
+        activeOpacity={0.9}
+        onPress={() => this._onLinkPressed()}
+      >
+        {this.renderImage(imageLink, faviconLink)}
+        {this.renderText(
+          showTitle,
+          showDescription,
+          title,
+          description,
+          titleNumberOfLines,
+          descriptionNumberOfLines
+        )}
+      </TouchableOpacity>
+    );
+  };
+
+  render() {
+    const { title, description, descriptionNumberOfLines } = this.props;
+    const { isUri, linkImg, linkFavicon, linkTitle, linkDesc } = this.state;
+    return isUri
+      ? this.renderLinkPreview(
+          linkImg,
+          linkFavicon,
+          title,
+          description,
+          linkTitle,
+          linkDesc,
+          descriptionNumberOfLines
+        )
+      : null;
+  }
+}
+
+RNUrlPreview.defaultProps = {
+  onLoad: () => {},
+  onError: () => {},
+  text: null,
+  requestOptions: null,
+  linkContainerStyle: {
+    backgroundColor: 'rgba(239, 239, 244, 0.62)',
+    alignItems: 'flex-start',
+    width: 200,
+    height: 70,
+    flex: 1,
+  },
+  imageStyle: {
+    width: 70,
+    height: 70,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  faviconStyle: {
+    width: 40,
+    height: 40,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  textContainerStyle: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    padding: 10,
+  },
+  title: true,
+  description: true,
+  titleStyle: {
+    fontSize: 17,
+    color: '#000',
+    marginRight: 10,
+    marginBottom: 5,
+    alignSelf: 'flex-start',
+  },
+  titleNumberOfLines: 2,
+  descriptionStyle: {
+    fontSize: 14,
+    color: '#81848A',
+    marginRight: 10,
+    alignSelf: 'flex-start',
+  },
+  descriptionNumberOfLines: 1,
+  imageProps: { resizeMode: 'contain' },
+};
+
+RNUrlPreview.propTypes = {
+  onLoad: PropTypes.func,
+  onError: PropTypes.func,
+  text: PropTypes.string,
+  linkContainerStyle: ViewPropTypes ? ViewPropTypes.style : PropTypes.object,
+  imageStyle: ViewPropTypes ? ViewPropTypes.style : PropTypes.object,
+  faviconStyle: ViewPropTypes ? ViewPropTypes.style : PropTypes.object,
+  textContainerStyle: ViewPropTypes ? ViewPropTypes.style : PropTypes.object,
+  title: PropTypes.bool,
+  description: PropTypes.bool,
+  titleStyle: Text.propTypes ? Text.propTypes.style : PropTypes.object,
+  imageProps: Text.propTypes ? Text.propTypes.style : PropTypes.object,
+  titleNumberOfLines: Text.propTypes ? Text.propTypes.numberOfLines : PropTypes.number,
+  descriptionStyle: Text.propTypes ? Text.propTypes.style : PropTypes.object,
+  descriptionNumberOfLines: Text.propTypes ? Text.propTypes.numberOfLines : PropTypes.number,
+  requestOptions: PropTypes.shape({
+    headers: PropTypes.objectOf(PropTypes.string),
+    imagesPropertyType: PropTypes.string,
+    proxyUrl: PropTypes.string,
+  }),
+};

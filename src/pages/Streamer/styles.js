@@ -41,6 +41,23 @@ const styles = StyleSheet.create({
     width: 200,
     height: 70,
     backgroundColor: 'white',
+    flexDirection: 'row',
+  },
+  btnImage: {
+    flex: 0.3,
+    // position: 'absolute',
+    // top: 458,
+    // left: 197,
+    borderRadius: 8,
+    width: 70,
+    height: 70,
+  },
+  btnLinkText: {
+    flex: 0.7,
+    fontSize: 17,
+    paddingHorizontal: 10,
+    fontWeight: '600',
+    color: 'black',
   },
   beginLiveStreamText: {
     fontSize: 20,
@@ -56,6 +73,50 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  containerStyle: {
+    flexDirection: 'row',
+  },
+  linkContainerStyle: {
+    backgroundColor: 'rgba(239, 239, 244, 0.5)',
+    position: 'absolute',
+    top: 458,
+    left: 197,
+    flexDirection: 'row',
+    width: 200,
+    height: 70,
+    flex: 0.5,
+  },
+  imageStyle: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: 70,
+    height: 70,
+    paddingRight: 10,
+    paddingLeft: 10,
+    flex: 0.3,
+  },
+  faviconStyle: {
+    width: 40,
+    height: 40,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  textContainerStyle: {
+    flex: 0.7,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    padding: 10,
+  },
+  titleStyle: {
+    fontSize: 10,
+    color: '#000',
+    marginBottom: 5,
+  },
+  descriptionStyle: {
+    fontSize: 8,
+    color: 'grey',
+  },
+  imageProps: { resizeMode: 'contain' },
 });
 
 export default styles;

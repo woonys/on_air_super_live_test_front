@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import { NodeCameraView } from 'react-native-nodemediaclient';
 import get from 'lodash/get';
+import RNUrlPreview from './RNUrlPreview';
 import { LIVE_STATUS, videoConfig, audioConfig } from '../../utils/constants';
 import SocketManager from '../../socketManager';
 import styles from './styles';
 import LiveStreamActionButton from './LiveStreamActionButton';
-import LinkButton from './LinkButton';
+// import LinkButton from './LinkButton';
 import ChatInputGroup from '../../components/ChatInputGroup';
 import MessagesList from '../../components/MessagesList/MessagesList';
 import FloatingHearts from '../../components/FloatingHearts';
@@ -28,6 +29,7 @@ export default class Streamer extends React.Component {
     const { route } = props;
     const roomName = get(route, 'params.roomName');
     const userName = get(route, 'params.userName', '');
+    // const linkUrl = get(route, 'params.linkUrl', '');
     this.state = {
       currentLiveStatus: LIVE_STATUS.PREPARE,
       messages: [],
@@ -186,10 +188,10 @@ export default class Streamer extends React.Component {
     return <MessagesList messages={messages} />;
   };
 
-  renderLink = () => {
+  onPressLinkButton = () => {
     const { isVisibleFooter } = this.state;
     if (isVisibleFooter) {
-      return <LinkButton />;
+      return <RNUrlPreview text="https://bit.ly/3rKSI7h" />;
     }
     return null;
   };
@@ -232,7 +234,7 @@ export default class Streamer extends React.Component {
           <TouchableWithoutFeedback onPress={this.onPressVisible}>
             <View style={styles.body}>
               <View style={styles.footerBar}>
-                {this.renderLink()}
+                {this.onPressLinkButton()}
                 {this.renderChatGroup()}
                 {this.renderListMessages()}
               </View>
