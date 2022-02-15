@@ -142,11 +142,6 @@ export default class Streamer extends React.Component {
     }
   };
 
-  _onLinkPressed = () => {
-    const { text } = this.props;
-    Linking.openURL(text.match(REGEX)[0]);
-  };
-
   requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.requestMultiple(
@@ -197,6 +192,7 @@ export default class Streamer extends React.Component {
   onPressLinkButton = () => {
     const { isVisibleFooter } = this.state;
     if (isVisibleFooter) return <RNUrlPreview text="https://bit.ly/3rKSI7h" />;
+    return null;
   };
 
   setCameraRef = (ref) => {
@@ -208,7 +204,7 @@ export default class Streamer extends React.Component {
     const { currentLiveStatus, countHeart } = this.state;
     const userName = get(route, 'params.userName', '');
     const outputUrl = `${RTMP_SERVER}/live/${userName}`;
-    const { isVisibleFooter } = this.state;
+    // const { isVisibleFooter } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <NodeCameraView

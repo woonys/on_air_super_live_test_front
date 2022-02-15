@@ -117,6 +117,10 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   imageProps: { resizeMode: 'contain' },
+  hide: {
+    width: 0,
+    height: 0,
+  },
 });
 
 export default styles;
