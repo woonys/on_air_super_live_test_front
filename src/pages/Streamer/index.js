@@ -8,13 +8,16 @@ import {
   Alert,
   PermissionsAndroid,
   TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import { NodeCameraView } from 'react-native-nodemediaclient';
 import get from 'lodash/get';
+import RNUrlPreview from './RNUrlPreview';
 import { LIVE_STATUS, videoConfig, audioConfig } from '../../utils/constants';
 import SocketManager from '../../socketManager';
 import styles from './styles';
 import LiveStreamActionButton from './LiveStreamActionButton';
+import LinkButton from './LinkButton';
 import ChatInputGroup from '../../components/ChatInputGroup';
 import MessagesList from '../../components/MessagesList/MessagesList';
 import FloatingHearts from '../../components/FloatingHearts';
@@ -27,6 +30,7 @@ export default class Streamer extends React.Component {
     const { route } = props;
     const roomName = get(route, 'params.roomName');
     const userName = get(route, 'params.userName', '');
+    // const linkUrl = get(route, 'params.linkUrl', '');
     this.state = {
       currentLiveStatus: LIVE_STATUS.PREPARE,
       messages: [],
@@ -91,7 +95,6 @@ export default class Streamer extends React.Component {
   onPressVisible = () => {
     const { isVisibleFooter } = this.state;
     this.setState(() => ({ isVisibleFooter: !isVisibleFooter }));
-    console.log(isVisibleFooter);
   };
 
   onEndEditing = () => this.setState({ isVisibleMessages: true });
@@ -186,6 +189,12 @@ export default class Streamer extends React.Component {
     return <MessagesList messages={messages} />;
   };
 
+  onPressLinkButton = () => {
+    const { isVisibleFooter } = this.state;
+    if (isVisibleFooter) return <RNUrlPreview text="https://bit.ly/3rKSI7h" />;
+    return null;
+  };
+
   setCameraRef = (ref) => {
     this.nodeCameraViewRef = ref;
   };
@@ -195,6 +204,7 @@ export default class Streamer extends React.Component {
     const { currentLiveStatus, countHeart } = this.state;
     const userName = get(route, 'params.userName', '');
     const outputUrl = `${RTMP_SERVER}/live/${userName}`;
+    // const { isVisibleFooter } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <NodeCameraView
@@ -224,6 +234,8 @@ export default class Streamer extends React.Component {
           <TouchableWithoutFeedback onPress={this.onPressVisible}>
             <View style={styles.body}>
               <View style={styles.footerBar}>
+                {/* {isVisibleFooter && <LinkButton />} */}
+                {this.onPressLinkButton()}
                 {this.renderChatGroup()}
                 {this.renderListMessages()}
               </View>
